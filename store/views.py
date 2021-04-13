@@ -1,6 +1,6 @@
 import re
 from django.utils.timezone import datetime
-#from django.shortcuts import render
+from django.shortcuts import render
 
 from django.http import HttpResponse
 
@@ -8,20 +8,13 @@ def home(request):
     return HttpResponse("Hello, Django!")
 
 def stock_info(request, name):
-    now = datetime.now()
-    formatted_now = now.strftime("%A, %d %B, %Y at %X")
-
-    # Filter the name argument to letters only using regular expressions.  
-    # URL arguments can contain arbitrary text, so we restrict to safe 
-    # characters only.  
-    match_object = re.match("[a-zA-z]+", name)
-
-    if match_object:
-        clean_name = match_object.group(0)
-    else:
-        clean_name = "Unknown Stock"
-
-    content = "This is information on " + clean_name + ".  It's " + formatted_now
-
-    return HttpResponse(content)
+    return render(
+        request,
+        'store/stock_info.html',
+        {
+            'name': name,
+            'date': datetime.now()
+        }
+    )
+ 
         
