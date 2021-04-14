@@ -218,3 +218,4 @@ fabric.properties
 
 #Compiled static assets
 static/
+static_collected/
