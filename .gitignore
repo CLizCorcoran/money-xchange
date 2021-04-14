@@ -217,5 +217,4 @@ fabric.properties
 *.sqlite3
 
 #Compiled static assets
-static/
 static_collected/
