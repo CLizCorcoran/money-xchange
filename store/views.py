@@ -10,18 +10,45 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.http import HttpResponse
 
+import quandl 
+from .secrets import *
 
-class HomeListView(ListView):
-    """Renders the home page, with a list of all messages."""
-    model = Transactions 
 
-    def get_context_data(self, **kwargs):
-        context = super(HomeListView, self).get_context_data(**kwargs)
-        return context
+#class HomeListView(ListView):
+#    """Renders the home page, with a list of all messages."""
+#    model = Transactions 
+#
+#    def get_context_data(self, **kwargs):
+#        context = super(HomeListView, self).get_context_data(**kwargs)
+#        return context
 
-#def home(request):
+def home(request):
     #return render(request, "store/home.html")
-    #return HttpResponse("Hello, Django!")
+    # High, Low, Mid, Last, Bid, Ask, Volume
+    quandl.ApiConfig.api_key = QUANDL_KEY
+
+    bitcoin = quandl.get("BITFINEX/BTCUSD", start_date="2021-04-15", end_date="2021-04-15")
+    ethereum = quandl.get("BITFINEX/ETHUSD", start_date="2021-04-15", end_date="2021-04-15")
+    ripple = quandl.get("BITFINEX/XRPUSD", start_date="2021-04-15", end_date="2021-04-15")
+    litecoin = quandl.get("BITFINEX/LTCUSD", start_date="2021-04-15", end_date="2021-04-15")
+    #bitcoincash = quandl.get("BITFINEX/BCHUSD", start_date="2021-04-15", end_date="2021-04-15")
+    zcash = quandl.get("BITFINEX/ZECUSD", start_date="2021-04-15", end_date="2021-04-15")
+
+    return render(
+        request,
+        'store/home.html',
+        {
+            'date': datetime.now(),
+            'bitcoin': bitcoin.Last.values[0],
+            'ethereum': ethereum.Last.values[0],
+            'ripple': ripple.Last.values[0],
+            'litecoin': litecoin.Last.values[0],
+            'zcash': zcash.Last.values[0],
+            #'bitcoincash': bitcoincash.Last.values[0]
+        }
+    )
+    
+    #return HttpResponse(mydata.Last)
 
 def about(request):
     return render(request, "store/about.html")
