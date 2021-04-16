@@ -1,22 +1,38 @@
 from django.db import models
 from django.utils import timezone
+import uuid # Required for unique transaction identification
+from django.contrib.auth.models import User 
 
 class Transactions(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this transaction")
     symbol = models.CharField(max_length=3)
     log_date = models.DateTimeField("date logged")
-    user_id = models.IntegerField()
-    action = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    ACTION_VALUES = (
+        ('b', "Buy"),
+        ('s', "Sell"),
+    )
+
+    action = models.CharField(max_length=1, choices=ACTION_VALUES, blank=True, default="b", help_text="Transaction type:,")
     quantity = models.IntegerField()
     price = models.DecimalField(max_digits=5, decimal_places=2)
+
+    @property
+    def total_price(self):
+        if self.price and self.quantity:
+            return self.price * self.quantity
+        else:
+            return 0
 
     def __str__(self):
         """Returns a string representation of a transaction"""
         date = timezone.localtime(self.log_date)
-        if action == 1:
-            return f"'{symbol}' was purchased on {date.strftime('%a, %d %B, %y at %X')}.  {quantity} shares were purchased at ${price} per share.  User:  {user_id}"
+        if self.action == 'b':
+            return f"'{self.symbol}' was purchased on {date.strftime('%a, %d %B, %y at %X')}.  {self.quantity} shares were purchased at ${self.price} per share.  Total amount:  {self.total_price}  User:  {self.user}"
 
-        elif action == 2:
-            return f"'{symbol}' was sold on {date.strftime('%a, %d %B, %y at %X')}.  {quantity} shares were sold at ${price} per share.  User:  {user_id}"
+        elif self.action == 's':
+            return f"'{self.symbol}' was sold on {date.strftime('%a, %d %B, %y at %X')}.  {self.quantity} shares were sold at ${self.price} per share.  Total amount: {self.total_price}  User:  {self.user}"
 
 
 

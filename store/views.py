@@ -5,6 +5,7 @@ from django.shortcuts import redirect
 from store.forms import TransactionForm
 from store.models import Transactions
 from django.views.generic import ListView
+from django.contrib.auth.decorators import login_required
 
 from django.http import HttpResponse
 
@@ -27,6 +28,7 @@ def about(request):
 def contact(request):
     return render(request, "store/contact.html")
 
+@login_required
 def log_transaction(request):
     form = TransactionForm(request.POST or None)
 
