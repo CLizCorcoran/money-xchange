@@ -6,6 +6,7 @@ from store.forms import TransactionForm
 from store.models import Transactions
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.http import HttpResponse
 
@@ -41,6 +42,16 @@ def log_transaction(request):
 
     else:
         return render(request, "store/transaction.html", {"form":form})
+
+class TransactionsByUserListView(LoginRequiredMixin, ListView):
+    """Generic class-based view listing transactions from the current user"""
+    model = Transactions
+    template_name = 'store/transactions_list_user.html'
+    paginate_by = 10
+
+    # can also specify a filter(var=value)
+    def get_queryset(self):
+        return Transactions.objects.filter(user=self.request.user).order_by('log_date')
 
 def stock_info(request, name):
     return render(

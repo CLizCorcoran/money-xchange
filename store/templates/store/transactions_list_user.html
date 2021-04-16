@@ -1,0 +1,37 @@
+{% extends "store/layout.html" %}
+{% block title %}
+User Transactions
+{% endblock %}
+{% block content %}
+    <h1>Transactions</h1>
+
+    {% if transactions_list %}
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Action</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Price</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transaction in transactions_list %}
+            <tr>
+                <td>{{ transaction.symbol }}</td>
+                <td>{% if transaction.action == 's' %}SOLD{% else %}BOUGHT{% endif %}</td>
+                <td>{{ transaction.log_date | date:'d M Y' }}</td>
+                <td>{{ transaction.log_date | date:'H:i:s' }}</td>
+                <td>{{ transaction.price }}</td>
+                <td>{{ transaction.quantity }}</td>
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No transactions have been logged.  Use the <a href="{% url 'log' %}">Log Transaction form</a></p>
+    {% endif %}
+{% endblock %}
