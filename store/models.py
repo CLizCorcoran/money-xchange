@@ -3,11 +3,20 @@ from django.utils import timezone
 import uuid # Required for unique transaction identification
 from django.contrib.auth.models import User 
 
+class Account(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.DecimalField(decimal_places=2, max_digits=8)
+
+    def __str__(self):
+        """Returns a string representation of a user's account"""
+        return f"User, {self.user}, has ${self.amount} left in their account"
+
+
 class Transactions(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this transaction")
     symbol = models.CharField(max_length=3)
     log_date = models.DateTimeField("date logged")
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     
     ACTION_VALUES = (
         ('b', "Buy"),

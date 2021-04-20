@@ -21,31 +21,44 @@ Home
                 <tr>
                     <td>Bitcoin (BTC)</td>
                     <td>{{ bitcoin|currency }}</td>
+                    {% if user.is_authenticated %}
                     <td><button type="submit" class="btn btn-primary">Buy</button></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Ethereum (ETH)</td>
                     <td>{{ ethereum|currency }}</td>
+                    {% if user.is_authenticated %}
                     <td><button type="submit" class="btn btn-primary">Buy</button></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Ripple (XRP)</td>
                     <td>{{ ripple|currency }}</td>
+                    {% if user.is_authenticated %}
                     <td><button type="submit" class="btn btn-primary">Buy</button></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Litecoin (LTC)</td>
                     <td>{{ litecoin|currency }}</td>
+                    {% if user.is_authenticated %}
                     <td><button type="submit" class="btn btn-primary">Buy</button></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Zcash (ZEC)</td>
                     <td>{{ zcash|currency }}</td>
+                    {% if user.is_authenticated %}
                     <td><button type="submit" class="btn btn-primary">Buy</button></td>
+                    {% endif %}
                 </tr>
                 <tr>
                     <td>Bitcoin Cash (BCH)</td>
                     <td>TBD</td>
+                    {% if user.is_authenticated %}
+                    <td><button type="submit" class="btn btn-primary disabled">Buy</button></td>
+                    {% endif %}
                 </tr>
             </tbody>
         </table>
