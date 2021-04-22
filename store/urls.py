@@ -14,6 +14,7 @@ urlpatterns = [
     #path("", home_list_view, name="home"),
     path("stock/<name>", views.stock_info, name="stock_info"),
     path("buy/<symbol>", views.buy, name="buy"),
+    path("sell/<symbol>", views.sell, name="sell"),
     path('about/', views.about, name="about"),
     path('contact/', views.contact, name="contact"),
     path('log/', views.log_transaction, name="log"),

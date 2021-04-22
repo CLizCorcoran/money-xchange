@@ -12,7 +12,7 @@ class Account(models.Model):
         return f"User, {self.user}, has ${self.amount} left in their account"
 
 class Cryptocurrency(models.Model):
-    symbol = models.CharField(max_length=3)
+    symbol = models.CharField(max_length=3, unique=True)
     name = models.CharField(max_length = 20)
     price = models.DecimalField(max_digits=7, decimal_places = 2)
 
@@ -23,8 +23,15 @@ class Cryptocurrency(models.Model):
 class Portfolio(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this portfolio entry") 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    symbol = models.CharField(max_length=3)
+    symbol = models.ForeignKey(Cryptocurrency, to_field='symbol', on_delete=models.CASCADE)
     quantity = models.IntegerField()
+
+    @property
+    def total_value(self):
+        if self.quantity and self.symbol.price:
+            return self.quantity * self.symbol.price
+        else:
+            return 0
 
     def __str__(self):
         """Return a string representation of a user's portfolio"""
@@ -32,7 +39,7 @@ class Portfolio(models.Model):
 
 class Transactions(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, help_text="Unique ID for this transaction")
-    symbol = models.CharField(max_length=3)
+    symbol = models.ForeignKey(Cryptocurrency, to_field='symbol', on_delete=models.CASCADE)
     log_date = models.DateTimeField("date logged")
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     

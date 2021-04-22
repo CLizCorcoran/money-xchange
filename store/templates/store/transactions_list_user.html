@@ -20,7 +20,7 @@ User Transactions
         <tbody>
             {% for transaction in transactions_list %}
             <tr>
-                <td>{{ transaction.symbol }}</td>
+                <td>{{ transaction.symbol.symbol }}</td>
                 <td>{% if transaction.action == 's' %}SOLD{% else %}BOUGHT{% endif %}</td>
                 <td>{{ transaction.log_date | date:'d M Y' }}</td>
                 <td>{{ transaction.log_date | date:'H:i:s' }}</td>

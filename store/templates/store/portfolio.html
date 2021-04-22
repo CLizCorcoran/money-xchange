@@ -1,4 +1,7 @@
 {% extends "store/layout.html" %}
+
+{% load custom_filters %}
+
 {% block title %}
 Portfolio
 {% endblock %}
@@ -10,13 +13,19 @@ Portfolio
         <tr>
             <th>Symbol</th>
             <th>Quantity</th>
+            <th>Current Price</th>
+            <th>Current Total Value</th>
         </tr>
     </thead>
     <tbody>
         {% for portfolio in portfolio_list %}
         <tr>
-            <td>{{ portfolio.symbol }}</td>
+            <td>{{ portfolio.symbol.name }} ({{ portfolio.symbol.symbol}})</td>
             <td>{{ portfolio.quantity }}</td>
+            <td>{{ portfolio.symbol.price|currency }}</td>
+            <td>{{ portfolio.total_value|currency }}</td>
+            <td><a href="{% url 'sell' portfolio.symbol.symbol %}" class="btn btn-primary">Sell</a></td>
+
         </tr>
         {% endfor %}
     </tbody>

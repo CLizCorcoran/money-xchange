@@ -3,15 +3,14 @@
 {% load custom_filters %}
 
 {% block title %}
-Buy
+Sell 
 {% endblock %}
 {% block content %}
-<h2 class="mb-5">Purchase Transaction</h2>
-<h4 class="mb-3">{{ crypto.name }} ({{ crypto.symbol }})</h4>
+<h2 class="mb-5">Sell Transaction</h2>
 <script>
     function calcTotal() {
         quantity = parseInt($('#quantity')[0].value);
-        price = parseFloat("{{crypto.price}}");
+        price = parseFloat("{{crypto.symbol.price}}");
         total = parseFloat(price);
         total = quantity * price;
         //$('#total').text(total);
@@ -19,13 +18,14 @@ Buy
         $('#total').text('$' + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString());
     }
 </script>
+<h4 class="mb-3">{{ crypto.symbol.name }} ({{ crypto.symbol.symbol }})</h4>
 <form method="POST">
     {% csrf_token %}
     <table class="table">
         <tbody>
             <tr>
-                <td><b>Price:</b></td>
-                <td>{{ crypto.price|currency }}</td>
+                <td><b>Sell Price:</b></td>
+                <td>{{ crypto.symbol.price|currency }}</td>
             </tr>
             <tr>
                 <td><b>Quantity:</b></td>
@@ -38,6 +38,6 @@ Buy
             </tr>
         </tbody>
     </table>
-    <button type="submit" class="btn btn-primary">Purchase</button>
+    <button type="submit" class="btn btn-primary">Sell</button>
 </form>
 {% endblock %}

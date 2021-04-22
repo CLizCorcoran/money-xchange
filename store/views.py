@@ -39,6 +39,7 @@ def home(request):
 
     #currencies = Cryptocurrency.objects.all()
     #day = date.today() 
+    date = datetime.now()
     #endDate = day.strftime("%Y-%m-%d")
     #startDate = str(day.year) + '-' + str(day.month-1) + '-' + str(day.day)
     #fromDate = "2021-04-01"
@@ -51,7 +52,8 @@ def home(request):
 
     cryptos = Cryptocurrency.objects.all()
     context = {
-        'cryptos': cryptos
+        'cryptos': cryptos,
+        'date': date
     }
 
     return render(request, 'store/home.html', context)
@@ -133,7 +135,7 @@ def buy(request, symbol):
         
         if form.is_valid():
             quantity = form.cleaned_data.get('quantity')
-            transaction = Transactions(user=request.user, symbol=info.symbol, price=info.price, log_date=datetime.now(), action='b', quantity=quantity)
+            transaction = Transactions(user=request.user, symbol=info, price=info.price, log_date=datetime.now(), action='b', quantity=quantity)
             transaction.save()
 
             try:
@@ -143,7 +145,7 @@ def buy(request, symbol):
             
             except Portfolio.DoesNotExist:
                 # The get method throws this when query fails
-                entry = Portfolio(user=request.user, symbol=info.symbol, quantity=quantity)
+                entry = Portfolio(user=request.user, symbol=info, quantity=quantity)
                 entry.save()
 
             return render(request, 'store/buy_complete.html')
@@ -157,6 +159,35 @@ def buy(request, symbol):
         }
         return render( request, 'store/buy.html', context )
 
+
+def sell(request, symbol):
+    info = Portfolio.objects.get(symbol=symbol)
+
+    if request.method == "POST":
+        form = BuyForm(request.POST, initial={'quantity': 0})
+        
+        if form.is_valid():
+            quantity = form.cleaned_data.get('quantity')
+            transaction = Transactions(user=request.user, symbol=info.symbol, price=info.symbol.price, log_date=datetime.now(), action='s', quantity=quantity)
+            transaction.save()
+
+            entry = Portfolio.objects.get(symbol=symbol)
+            entry.quantity -= quantity
+            if quantity > 0:
+                entry.save()
+            else:
+                entry.delete()        
+ 
+            return render(request, 'store/buy_complete.html')
+
+    else:
+        form = BuyForm()
+        
+        context = {
+            'crypto': info,
+            'form': form
+        }
+        return render( request, 'store/sell.html', context )
 
 
  
