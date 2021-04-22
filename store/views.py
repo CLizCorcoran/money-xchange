@@ -102,6 +102,17 @@ class TransactionsByUserListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Transactions.objects.filter(user=self.request.user).order_by('log_date')
 
+
+class PortfolioByUserListView(LoginRequiredMixin, ListView):
+    """Generic class-based view listing user's portfolio"""
+    model = Portfolio
+    template_name = 'store/portfolio.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        #return Portfolio.objects.all().order_by('symbol')
+        return Portfolio.objects.filter(user=self.request.user).order_by('symbol')
+
 def stock_info(request, name):
     return render(
         request,

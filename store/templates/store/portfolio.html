@@ -1,0 +1,24 @@
+{% extends "store/layout.html" %}
+{% block title %}
+Portfolio
+{% endblock %}
+{% block content %}
+<h1 class="mb-5">Portfolio</h1>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for portfolio in portfolio_list %}
+        <tr>
+            <td>{{ portfolio.symbol }}</td>
+            <td>{{ portfolio.quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
