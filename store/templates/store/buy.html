@@ -1,0 +1,43 @@
+{% extends "store/layout.html" %}
+
+{% load custom_filters %}
+
+{% block title %}
+Buy
+{% endblock %}
+{% block content %}
+<h2 class="mb-5">Purchase Transaction</h2>
+<h4 class="mb-3">{{ crypto.name }} ({{ crypto.symbol }})</h4>
+<script>
+    function calcTotal() {
+        quantity = parseInt($('#quantity')[0].value);
+        price = parseInt("{{crypto.price}}");
+        total = parseInt(price);
+        total = quantity * price;
+        //$('#total').text(total);
+
+        $('#total').text('$' + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString());
+    }
+</script>
+<form method="POST">
+    {% csrf_token %}
+    <table class="table">
+        <tbody>
+            <tr>
+                <td><b>Price:</b></td>
+                <td>{{ crypto.price|currency }}</td>
+            </tr>
+            <tr>
+                <td><b>Quantity:</b></td>
+                <td>{{ form.quantity }}</td>
+                <!--<td><input id="quantity" type="number" name="quantity" value=0 onChange="calcTotal()"></td>-->
+            </tr>
+            <tr>
+                <td><b>Total:</b></td>
+                <td><h5 id="total">$0</h5></td>
+            </tr>
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Purchase</button>
+</form>
+{% endblock %}
