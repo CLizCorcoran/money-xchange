@@ -9,35 +9,67 @@ Buy
 <h2 class="mb-5">Purchase Transaction</h2>
 <h4 class="mb-3">{{ crypto.name }} ({{ crypto.symbol }})</h4>
 <script>
+  	$(document).ready(function () {
+        $('#quantity').attr('min', '0');
+
+ 
+	});
+
     function calcTotal() {
         quantity = parseInt($('#quantity')[0].value);
         price = parseFloat("{{crypto.price}}");
         total = parseFloat(price);
         total = quantity * price;
+        accountAmt = parseFloat("{{account.amount}}");
         //$('#total').text(total);
+
+        //$('#buy').attr('disabled', 'disabled');
+ 
+        let error = "";
+        if (quantity < 0) {
+            error = "Unable to purchase.  Must specify a quantity greater than 0";
+        }
+        else if (total > accountAmt) {
+            error = "Unable to purchase.  There are no enough funds in your account for payment.";
+        }
+
+        if (error !== "" || quantity == 0) {
+            $('#buy').attr('disabled', 'disabled');
+        }
+        else {
+            $('#buy').removeAttr('disabled');
+        }
+
+        $('#error').text(error);
 
         $('#total').text('$' + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString());
     }
+
+ 
 </script>
 <form method="POST">
     {% csrf_token %}
+    <div>
     <table class="table">
         <tbody>
             <tr>
-                <td><b>Price:</b></td>
+                <td class="title"><b>Price:</b></td>
                 <td>{{ crypto.price|currency }}</td>
             </tr>
             <tr>
-                <td><b>Quantity:</b></td>
+                <td class="title"><b>Quantity:</b></td>
                 <td>{{ form.quantity }}</td>
                 <!--<td><input id="quantity" type="number" name="quantity" value=0 onChange="calcTotal()"></td>-->
             </tr>
             <tr>
-                <td><b>Total:</b></td>
+                <td class="title"><b>Total:</b></td>
                 <td><h5 id="total">$0</h5></td>
             </tr>
         </tbody>
     </table>
-    <button type="submit" class="btn btn-primary">Purchase</button>
+    </div>
+    <p id="error" class="text-danger"></p>
+    <button id="buy" type="submit" disabled class="btn btn-primary">Purchase</button>
+    <p class="mt-3"><b>Account Balance: {{ account.amount|currency }}</b></p>
 </form>
 {% endblock %}

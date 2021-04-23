@@ -4,7 +4,7 @@ from datetime import date
 from django.shortcuts import render
 from django.shortcuts import redirect
 from store.forms import TransactionForm, BuyForm
-from store.models import Transactions, Portfolio
+from store.models import Account, Transactions, Portfolio
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -129,15 +129,23 @@ def stock_info(request, name):
 def buy(request, symbol):
 
     info = Cryptocurrency.objects.get(symbol=symbol)
+    account = Account.objects.get(user=request.user)
         
     if request.method == "POST":
         form = BuyForm(request.POST, initial={'quantity': 0})
         
         if form.is_valid():
             quantity = form.cleaned_data.get('quantity')
+
+            # Save the Transaction
             transaction = Transactions(user=request.user, symbol=info, price=info.price, log_date=datetime.now(), action='b', quantity=quantity)
             transaction.save()
 
+            # Update the User's account
+            account.amount -= transaction.total_price
+            account.save()
+
+            # Add or Update the User's Portfolio entry.
             try:
                 entry = Portfolio.objects.get(symbol=symbol)
                 entry.quantity += quantity
@@ -148,13 +156,18 @@ def buy(request, symbol):
                 entry = Portfolio(user=request.user, symbol=info, quantity=quantity)
                 entry.save()
 
-            return render(request, 'store/buy_complete.html')
+            context = {
+                'balance': account.amount
+            }
+
+            return render(request, 'store/buy_complete.html', context )
 
     else:
         form = BuyForm()
         
         context = {
             'crypto': info,
+            'account': account,
             'form': form
         }
         return render( request, 'store/buy.html', context )

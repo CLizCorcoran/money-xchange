@@ -10,7 +10,7 @@ class TransactionForm(forms.ModelForm):
 class BuyForm(forms.Form):
     quantity = forms.IntegerField()
 
-    quantity.widget.attrs.update({'id': 'quantity', 'onChange': 'calcTotal()'})
+    quantity.widget.attrs.update({'id': 'quantity', 'min': '0', 'value': '0', 'onChange': 'calcTotal()'})
       
 
 

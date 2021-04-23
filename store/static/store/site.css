@@ -2,3 +2,15 @@
     font-weight: 600;
     color: blue;
 }
+
+#quantity {
+    width: 4em;
+}
+
+.title {
+    width: 7em;
+}
+
+#error {
+    min-height: 2em;
+}

@@ -2,11 +2,24 @@ from django.db import models
 from django.utils import timezone
 import uuid # Required for unique transaction identification
 from django.contrib.auth.models import User 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
+# Hooked Account to User via this article:  
+#   https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 class Account(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     amount = models.DecimalField(decimal_places=2, max_digits=8)
 
+    @receiver(post_save, sender=User)
+    def create_user_account(sender, instance, created, **kwargs):
+        if created:
+            Account.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_account(sender, instance, **kwargs):
+        instance.account.save()
+        
     def __str__(self):
         """Returns a string representation of a user's account"""
         return f"User, {self.user}, has ${self.amount} left in their account"

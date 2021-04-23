@@ -1,8 +1,14 @@
 {% extends "store/layout.html" %}
+
+{% load custom_filters %}
+
 {% block title %}
 Purchase Complete
 {% endblock %}
 {% block content %}
 <h3 class="mb-5">Purchase Complete</h3>
-<h5>Success!  Your order has been completed.  Details of this transaction can be viewed in your transactions.</h5>
+<h5 class="mb-5">Success!</h5>
+
+<h5 class="mb-5">Your order has been completed.  Details of this transaction can be viewed under 'Transactions'.</h5>
+<h5 class="mb-5">Account Balance:  {{ balance|currency }}</h5>
 {% endblock %}
