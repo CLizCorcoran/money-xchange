@@ -20,3 +20,16 @@
 #error {
     min-height: 2em;
 }
+
+.bigger {
+    font-size: 1.2em;
+}
+
+.site-container {
+    max-width: 550px;
+}
+
+.date {
+    color: gray;
+    padding-bottom: 25px;
+}
