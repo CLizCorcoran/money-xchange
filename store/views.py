@@ -3,11 +3,15 @@ from django.utils.timezone import datetime
 from datetime import date
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.urls import reverse, reverse_lazy
 from store.forms import TransactionForm, BuyForm
 from store.models import Account, Transactions, Portfolio
+from django.views import generic 
 from django.views.generic import ListView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
+
 
 from django.http import HttpResponse
 
@@ -73,6 +77,12 @@ def home(request):
     #)
     
     #return HttpResponse(mydata.Last)
+
+
+class SignUpView(generic.CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'registration/signup.html'
 
 def about(request):
     return render(request, "store/about.html")
@@ -175,29 +185,43 @@ def buy(request, symbol):
 
 def sell(request, symbol):
     info = Portfolio.objects.get(symbol=symbol)
+    account = Account.objects.get(user=request.user)
 
     if request.method == "POST":
         form = BuyForm(request.POST, initial={'quantity': 0})
         
         if form.is_valid():
             quantity = form.cleaned_data.get('quantity')
+
+            # Save the Transaction
             transaction = Transactions(user=request.user, symbol=info.symbol, price=info.symbol.price, log_date=datetime.now(), action='s', quantity=quantity)
             transaction.save()
 
+            # Update the User's Account
+            account.amount += transaction.total_price
+            account.save()
+
+            # Modify the User's Portfolio to reflect purchase.
+            # Delete the Transaction if no coins are remaining.  
             entry = Portfolio.objects.get(symbol=symbol)
             entry.quantity -= quantity
             if quantity > 0:
                 entry.save()
             else:
-                entry.delete()        
+                entry.delete()   
+
+            context = {
+                'balance': account.amount
+            }     
  
-            return render(request, 'store/buy_complete.html')
+            return render(request, 'store/buy_complete.html', context)
 
     else:
         form = BuyForm()
         
         context = {
             'crypto': info,
+            'account': account,
             'form': form
         }
         return render( request, 'store/sell.html', context )

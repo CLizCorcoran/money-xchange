@@ -9,7 +9,7 @@ from django.dispatch import receiver
 #   https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 class Account(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    amount = models.DecimalField(decimal_places=2, max_digits=8)
+    amount = models.DecimalField(decimal_places=2, max_digits=9, default=10000.00)
 
     @receiver(post_save, sender=User)
     def create_user_account(sender, instance, created, **kwargs):

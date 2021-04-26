@@ -13,7 +13,22 @@ Sell
         price = parseFloat("{{crypto.symbol.price}}");
         total = parseFloat(price);
         total = quantity * price;
-        //$('#total').text(total);
+        accountAmt = parseFloat("{{account.amount}}");
+ 
+
+        let error = "";
+        if (quantity < 0) {
+            error = "Unable to purchase.  Must specify a quantity greater than 0";
+        }
+
+        if (quantity <= 0) {
+            $('#buy').attr('disabled', 'disabled');
+        }
+        else {
+            $('#buy').removeAttr('disabled');
+        }
+
+        $('#error').text(error);
 
         $('#total').text('$' + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString());
     }
@@ -24,16 +39,16 @@ Sell
     <table class="table">
         <tbody>
             <tr>
-                <td><b>Sell Price:</b></td>
+                <td class="title"><b>Sell Price:</b></td>
                 <td>{{ crypto.symbol.price|currency }}</td>
             </tr>
             <tr>
-                <td><b>Quantity:</b></td>
+                <td class="title"><b>Quantity:</b></td>
                 <td>{{ form.quantity }}</td>
                 <!--<td><input id="quantity" type="number" name="quantity" value=0 onChange="calcTotal()"></td>-->
             </tr>
             <tr>
-                <td><b>Total:</b></td>
+                <td class="title"><b>Total:</b></td>
                 <td><h5 id="total">$0</h5></td>
             </tr>
         </tbody>

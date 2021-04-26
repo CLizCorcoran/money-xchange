@@ -1,3 +1,5 @@
+
+
 .message {
     font-weight: 600;
     color: blue;
@@ -5,6 +7,10 @@
 
 #quantity {
     width: 4em;
+}
+
+.fas-coins {
+    display: inline;
 }
 
 .title {

@@ -5,15 +5,17 @@
     <title>{% block title %}{% endblock %}</title>
     {% load static %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/87baf7d682.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'store/cyborg.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'store/site.css' %}" />
 </head>
 
 <body>
     <div class="navbar navbar-expand-sm navbar-dark bg-primary">
+        <!-- <i class="fas fa-coins"/> -->
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a href="{% url 'home' %}" class="navbar-brand">Money XChange</a>
+               <a href="{% url 'home' %}" class="navbar-brand">Money XChange</a>
             </li>
             <li  class="nav-item">
                 <a class="nav-link" href="{% url 'about' %}" >About</a>
