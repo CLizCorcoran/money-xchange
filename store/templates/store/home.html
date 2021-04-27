@@ -6,15 +6,23 @@
 Home
 {% endblock %}
 {% block content %}
+
 <div class="container">
     <h2>Market</h2>
     <h4 class="date">{{ date | date:'F d' }}</h4>
+    <form method="POST" class="form-inline my-2 my-lg-0">
+        {% csrf_token %}
+        {{ form.symbol }}
+        <!--<input class="form-control mr-sm-2" type="text" placeholder="Search">-->
+        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+    </form>
 
         <table class="table table-hover">
             <thead>
                 <tr>
                     <th>Cryptos</th>
                     <th>Price (USD)</th>
+                    <th> </th>
                     <th> </th>
                 </tr>
             </thead>
@@ -24,7 +32,7 @@ Home
                         <td>{{ crypto.name }} ({{ crypto.symbol }})</td>
                         <td>{{ crypto.price|currency }}</td>
                         {% if user.is_authenticated %}
-                        <!--<td><button type="submit" class="btn btn-primary">Buy</button></td>-->
+                        <td><a href="{% url 'stock_info' crypto.symbol %}" class="btn btn-secondary">Info</a></td>
                         <td><a href="{% url 'buy' crypto.symbol %}" class="btn btn-primary">Buy</a></td>
                         {% endif %}                        
                     </tr>

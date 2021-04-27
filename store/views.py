@@ -4,7 +4,7 @@ from datetime import date
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from store.forms import TransactionForm, BuyForm
+from store.forms import TransactionForm, BuyForm, SearchForm
 from store.models import Account, Transactions, Portfolio
 from django.views import generic 
 from django.views.generic import ListView
@@ -34,36 +34,40 @@ def home(request):
     # High, Low, Mid, Last, Bid, Ask, Volume
     quandl.ApiConfig.api_key = QUANDL_KEY
 
-    #bitcoin = quandl.get("BITFINEX/BTCUSD", start_date="2021-04-15", end_date="2021-04-15")
-    #ethereum = quandl.get("BITFINEX/ETHUSD", start_date="2021-04-15", end_date="2021-04-15")
-    #ripple = quandl.get("BITFINEX/XRPUSD", start_date="2021-04-15", end_date="2021-04-15")
-    #litecoin = quandl.get("BITFINEX/LTCUSD", start_date="2021-04-15", end_date="2021-04-15")
-    #bitcoincash = quandl.get("BITFINEX/BCHUSD", start_date="2021-04-15", end_date="2021-04-15")
-    #zcash = quandl.get("BITFINEX/ZECUSD", start_date="2021-04-15", end_date="2021-04-15")
+    if request.method == "POST":
+        form = SearchForm(request.POST)
 
-    #currencies = Cryptocurrency.objects.all()
-    #day = date.today() 
-    date = datetime.now()
-    #endDate = day.strftime("%Y-%m-%d")
-    #startDate = str(day.year) + '-' + str(day.month-1) + '-' + str(day.day)
-    #fromDate = "2021-04-01"
-    for currency in Cryptocurrency.objects.all():
-        name = "BITFINEX/" + currency.symbol + "USD"
-        #info = quandl.get(name, start_date=startDate, end_date=endDate)
-        info = quandl.get(name, rows=1)
-        currency.price = info.Last.values[0]
-        currency.save()
+        if form.is_valid():
+            search = form.cleaned_data.get('symbol')
+            url = 'stock/' + search
 
-    
+            return redirect(url)
 
-    cryptos = Cryptocurrency.objects.all()
-    context = {
-        'cryptos': cryptos,
-        'date': date
-    }
+    else:
+        form = SearchForm()
+ 
+        date = datetime.now()
+        #endDate = day.strftime("%Y-%m-%d")
+        #startDate = str(day.year) + '-' + str(day.month-1) + '-' + str(day.day)
+        #fromDate = "2021-04-01"
+        for currency in Cryptocurrency.objects.all():
+            name = "BITFINEX/" + currency.symbol + "USD"
+            #info = quandl.get(name, start_date=startDate, end_date=endDate)
+            info = quandl.get(name, rows=1)
+            currency.price = info.Last.values[0]
+            currency.save()
+
+        
+
+        cryptos = Cryptocurrency.objects.all()
+        context = {
+            'cryptos': cryptos,
+            'date': date,
+            'form': form
+        }
 
 
-    return render(request, 'store/home.html', context)
+        return render(request, 'store/home.html', context)
 
     #return render(
     #    request,

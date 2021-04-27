@@ -34,3 +34,7 @@
     color: gray;
     padding-bottom: 25px;
 }
+
+#symbol_search {
+    width: 60px;
+}
