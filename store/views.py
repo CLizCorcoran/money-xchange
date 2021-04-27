@@ -139,6 +139,10 @@ def stock_info(request, name):
     )
 
 
+def transaction_complete(request):
+    return render(request, 'store/transaction_complete.html')
+
+
 def buy(request, symbol):
 
     info = Cryptocurrency.objects.get(symbol=symbol)
@@ -172,8 +176,7 @@ def buy(request, symbol):
             context = {
                 'balance': account.amount
             }
-
-            return render(request, 'store/buy_complete.html', context )
+            return redirect('transaction_complete')
 
     else:
         form = BuyForm()
@@ -216,7 +219,7 @@ def sell(request, symbol):
                 'balance': account.amount
             }     
  
-            return render(request, 'store/buy_complete.html', context)
+            return redirect('transaction_complete')
 
     else:
         form = BuyForm()
@@ -226,6 +229,9 @@ def sell(request, symbol):
             'form': form
         }
         return render( request, 'store/sell.html', context )
+
+
+
 
 
  
