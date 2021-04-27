@@ -11,8 +11,6 @@ Buy
 <script>
   	$(document).ready(function () {
         $('#quantity').attr('min', '0');
-
- 
 	});
 
     function calcTotal() {
@@ -21,9 +19,6 @@ Buy
         total = parseFloat(price);
         total = quantity * price;
         accountAmt = parseFloat("{{account.amount}}");
-        //$('#total').text(total);
-
-        //$('#buy').attr('disabled', 'disabled');
  
         let error = "";
         if (quantity < 0) {
@@ -50,7 +45,7 @@ Buy
 <form method="POST">
     {% csrf_token %}
     <div>
-    <table class="table">
+    <table class="table mb-0">
         <tbody>
             <tr>
                 <td class="title"><b>Price:</b></td>
@@ -65,11 +60,11 @@ Buy
                 <td class="title"><b>Total:</b></td>
                 <td><h5 id="total">$0</h5></td>
             </tr>
-        </tbody>
+          </tbody>
     </table>
     </div>
-    <p id="error" class="text-danger"></p>
+    <p id="error" class="text-danger mb-0"></p>
     <button id="buy" type="submit" disabled class="btn btn-primary">Purchase</button>
-    <p class="mt-3"><b>Account Balance: {{ account.amount|currency }}</b></p>
+ 
 </form>
 {% endblock %}

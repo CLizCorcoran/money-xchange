@@ -54,11 +54,14 @@ def home(request):
         currency.price = info.Last.values[0]
         currency.save()
 
+    
+
     cryptos = Cryptocurrency.objects.all()
     context = {
         'cryptos': cryptos,
         'date': date
     }
+
 
     return render(request, 'store/home.html', context)
 
@@ -177,7 +180,6 @@ def buy(request, symbol):
         
         context = {
             'crypto': info,
-            'account': account,
             'form': form
         }
         return render( request, 'store/buy.html', context )
@@ -221,7 +223,6 @@ def sell(request, symbol):
         
         context = {
             'crypto': info,
-            'account': account,
             'form': form
         }
         return render( request, 'store/sell.html', context )
