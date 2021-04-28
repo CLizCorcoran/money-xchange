@@ -1,0 +1,25 @@
+{% extends "store/layout.html" %}
+
+{% load custom_filters %}
+
+{% block title %}
+{{ crypto.symbol }}
+{% endblock %}
+{% block content %}
+<h2>{{ crypto.name }} ({{ crypto.symbol }})</h2>
+<h4 class="date">{{ date | date:'F d' }}</h4>
+<table class="table mb-0">
+    <tbody>
+        <tr>
+            <td class="title">30 Day High:</td>
+            <td>{{ high|currency }}</td>
+        </tr>
+        <tr>
+            <td class="title">30 Day Low:</td>
+            <td>{{ low|currency }}</td>
+            <!--<td><input id="quantity" type="number" name="quantity" value=0 onChange="calcTotal()"></td>-->
+        </tr>
+       </tbody>
+</table>
+{% endblock %}
+

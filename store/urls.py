@@ -12,7 +12,7 @@ from store.models import Transactions
 urlpatterns = [
     path("", views.home, name="home"),
     #path("", home_list_view, name="home"),
-    path("stock/<name>", views.stock_info, name="stock_info"),
+    path("crypto/<symbol>", views.crypto_info, name="crypto_info"),
     path("buy/<symbol>", views.buy, name="buy"),
     path("sell/<symbol>", views.sell, name="sell"),
     path("transaction_complate", views.transaction_complete, name="transaction_complete"),

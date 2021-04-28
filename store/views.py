@@ -40,7 +40,7 @@ def home(request):
 
         if form.is_valid():
             search = form.cleaned_data.get('symbol')
-            url = 'stock/' + search
+            url = 'crypto/' + search
 
             return redirect(url)
 
@@ -176,12 +176,28 @@ class PortfolioByUserListView(LoginRequiredMixin, ListView):
         #return Portfolio.objects.all().order_by('symbol')
         return Portfolio.objects.filter(user=self.request.user).order_by('symbol')
 
-def stock_info(request, name):
+def crypto_info(request, symbol):
+
+    info = Cryptocurrency.objects.get(symbol=symbol)
+
+    name = "BITFINEX/" + symbol + "USD"
+    today = date.today()
+    endDate = today.strftime("%Y-%m-%d")
+    startDate = str(today.year) + '-' + str(today.month-1) + '-' + str(today.day)
+
+    month_info = quandl.get(name, start_date=startDate, end_date=endDate)
+
+    high = max(month_info.High)
+    low = min(month_info.Low)
+    
+
     return render(
         request,
-        'store/stock_info.html',
+        'store/crypto_info.html',
         {
-            'name': name,
+            'crypto': info,
+            'high': high,
+            'low': low,
             'date': datetime.now()
         }
     )
