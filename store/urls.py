@@ -18,8 +18,10 @@ urlpatterns = [
     path("transaction_complate", views.transaction_complete, name="transaction_complete"),
     path('about/', views.about, name="about"),
     path('contact/', views.contact, name="contact"),
-    path('log/', views.log_transaction, name="log"),
+    #path('log/', views.log_transaction, name="log"),
     path('transactions/', views.TransactionsByUserListView.as_view(), name='my-transactions'),
     path('portfolio/', views.PortfolioByUserListView.as_view(), name="my-portfolio"),
-    path('accounts/signup/', views.SignUpView.as_view(), name='signup')
+    path('accounts/signup/', views.SignUpView.as_view(), name='signup'),
+    path('accounts/profile/', views.update_profile, name='profile'),
+    path('accounts/reset/', views.reset_account, name="reset_account")
 ]

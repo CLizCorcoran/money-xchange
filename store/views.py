@@ -4,10 +4,11 @@ from datetime import date
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from store.forms import TransactionForm, BuyForm, SearchForm
+from store.forms import TransactionForm, BuyForm, SearchForm, UserForm
 from store.models import Account, Transactions, Portfolio
 from django.views import generic 
 from django.views.generic import ListView
+from django.contrib import messages 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
@@ -91,25 +92,68 @@ class SignUpView(generic.CreateView):
     success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
 
+#@transaction.atomic
+# https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
+
+@login_required
+def update_profile(request):
+    if request.method == "POST":
+        user_form = UserForm(request.POST, instance=request.user)
+        if user_form.is_valid():
+            user_form.save()
+            messages.success(request, "Your profile was successfully updated!")
+            return redirect('home')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    
+    else:
+        user_form = UserForm(instance=request.user)
+
+    context = {
+        'user_form': user_form
+    }
+
+    return render(request, 'store/account.html', context)
+
+@login_required
+def reset_account(request):
+    # Reset amount to 10,000
+    request.user.account.amount = 10000;
+    request.user.account.save()
+
+    # Clear all transactions
+    Transactions.objects.filter(user=request.user).delete()
+
+
+    # Clear portfolio
+    Portfolio.objects.filter(user=request.user).delete()
+
+    messages.success(request, "Your account has been successfully reset!")
+
+    return redirect('home')
+  
+
+
+
 def about(request):
     return render(request, "store/about.html")
 
 def contact(request):
     return render(request, "store/contact.html")
 
-@login_required
-def log_transaction(request):
-    form = TransactionForm(request.POST or None)
-
-    if request.method == "POST":
-        if form.is_valid():
-            symbol = form.save(commit=False)
-            symbol.log_date = datetime.now()
-            symbol.save()
-            return redirect("home")
-
-    else:
-        return render(request, "store/transaction.html", {"form":form})
+#@login_required
+#def log_transaction(request):
+#    form = TransactionForm(request.POST or None)
+#
+#    if request.method == "POST":
+#        if form.is_valid():
+#            symbol = form.save(commit=False)
+#            symbol.log_date = datetime.now()
+#            symbol.save()
+ #           return redirect("home")
+#
+#    else:
+#        return render(request, "store/transaction.html", {"form":form})
 
 class TransactionsByUserListView(LoginRequiredMixin, ListView):
     """Generic class-based view listing transactions from the current user"""
