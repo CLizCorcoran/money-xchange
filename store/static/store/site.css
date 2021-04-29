@@ -14,7 +14,8 @@
 }
 
 .title {
-    width: 7em;
+    width: 8em;
+    font-weight: bold;
 }
 
 #error {

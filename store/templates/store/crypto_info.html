@@ -18,11 +18,17 @@
         <tr>
             <td class="title">30 Day Low:</td>
             <td>{{ low|currency }}</td>
-            <!--<td><input id="quantity" type="number" name="quantity" value=0 onChange="calcTotal()"></td>-->
-        </tr>
+         </tr>
+         <tr>
+            <td class="title">Current Price:</td>
+            <td>{{ crypto.price|currency }}</td>
+         </tr>
        </tbody>
 </table>
-<div id="graph-canvas" class="month_graph">
+<div id="graph-canvas" class="month_graph mt-3">
+    {% if user.is_authenticated %}
+    <a href="{% url 'buy' crypto.symbol %}" class="btn btn-primary mb-3">Buy</a>
+    {% endif %}
     {{ graph|safe }}
 </div>
 {% endblock %}

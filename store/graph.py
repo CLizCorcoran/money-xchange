@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mtick
+import matplotlib.dates as mdates
 from io import StringIO
 import numpy as np
 
@@ -22,8 +23,6 @@ def return_graph():
 
 def plot_graph(T, Last):
 
-    #fig = plt.figure()
-
     fig, ax = plt.subplots()
 
     try:
@@ -32,14 +31,23 @@ def plot_graph(T, Last):
     except Exception as e:
         print("Error plotting graph")
 
-    #fmt = '${x:, .0f}'
-    #tick = mtick.StrMethodFormatter(fmt)
-    #ax.yaxis.set_major_formatter(tick)
-    ax.yaxis.set_major_formatter('${x:1.2f}')
-    #plt.xticks(rotate=25)
+    # Formatting the xaxis - Dates
+    locator = mdates.AutoDateLocator(maxticks=8)
+    formatter = mdates.ConciseDateFormatter(locator)
+    ax.xaxis.set_major_locator(locator)
+    ax.xaxis.set_major_formatter(formatter)
+    
+    # Formatting the yaxis - $$ 
+    ax.yaxis.set_major_formatter('${x:,.2f}')
+    ax.yaxis.set_tick_params(which='major', labelcolor='green',
+                         labelleft=True, labelright=False)
+   
+    #graph = mpld3.fig_to_html(fig)
+    #return graph
+
 
     imgdata = StringIO()
-    fig.savefig(imgdata, format='svg')
+    fig.savefig(imgdata, format='svg', bbox_inches="tight")
     imgdata.seek(0)
 
     graph = imgdata.getvalue()

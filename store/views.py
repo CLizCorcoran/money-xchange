@@ -179,6 +179,8 @@ class PortfolioByUserListView(LoginRequiredMixin, ListView):
 
 def crypto_info(request, symbol):
 
+    quandl.ApiConfig.api_key = QUANDL_KEY
+
     info = Cryptocurrency.objects.get(symbol=symbol)
 
     name = "BITFINEX/" + symbol + "USD"
@@ -188,8 +190,8 @@ def crypto_info(request, symbol):
 
     month_info = quandl.get(name, start_date=startDate, end_date=endDate)
 
-    high = max(month_info.High)
-    low = min(month_info.Low)
+    high = max(month_info.Last)
+    low = min(month_info.Last)
 
     #graph = return_graph()
     graph = plot_graph(month_info.T, month_info.Last)
