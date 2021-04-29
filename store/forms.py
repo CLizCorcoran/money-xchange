@@ -16,7 +16,11 @@ class TransactionForm(forms.ModelForm):
 
 class BuyForm(forms.Form):
     quantity = forms.IntegerField()
-    quantity.widget.attrs.update({'id': 'quantity', 'min': '0', 'value': '0', 'onChange': 'calcTotal()'})
+    quantity.widget.attrs.update({'id': 'buy_quantity', 'class': 'quantity', 'min': '0', 'value': '0', 'onChange': 'calcBuyTotal()'})
+
+class SellForm(forms.Form):
+    quantity = forms.IntegerField()
+    quantity.widget.attrs.update({'id': 'sell_quantity', 'class': 'quantity', 'min': '0', 'value': '0', 'onChange': 'calcSellTotal()'})
 
 
 class SearchForm(forms.Form):

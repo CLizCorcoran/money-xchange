@@ -8,8 +8,8 @@ Sell
 {% block content %}
 <h2 class="mb-5">Sell Transaction</h2>
 <script>
-    function calcTotal() {
-        quantity = parseInt($('#quantity')[0].value);
+    function calcSellTotal() {
+        quantity = parseInt($('#sell_quantity')[0].value);
         price = parseFloat("{{crypto.symbol.price}}");
         total = parseFloat(price);
         total = quantity * price;
@@ -22,10 +22,10 @@ Sell
         }
 
         if (quantity <= 0) {
-            $('#buy').attr('disabled', 'disabled');
+            $('#sell').attr('disabled', 'disabled');
         }
         else {
-            $('#buy').removeAttr('disabled');
+            $('#sell').removeAttr('disabled');
         }
 
         $('#error').text(error);
@@ -53,6 +53,6 @@ Sell
             </tr>
         </tbody>
     </table>
-    <button type="submit" class="btn btn-primary">Sell</button>
+    <button id="sell" type="submit" disabled class="btn btn-primary">Sell</button>
 </form>
 {% endblock %}

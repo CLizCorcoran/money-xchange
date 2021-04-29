@@ -9,12 +9,9 @@ Buy
 <h2 class="mb-5">Purchase Transaction</h2>
 <h4 class="mb-3">{{ crypto.name }} ({{ crypto.symbol }})</h4>
 <script>
-  	$(document).ready(function () {
-        $('#quantity').attr('min', '0');
-	});
-
-    function calcTotal() {
-        quantity = parseInt($('#quantity')[0].value);
+  	
+    function calcBuyTotal() {
+        quantity = parseInt($('#buy_quantity')[0].value);
         price = parseFloat("{{crypto.price}}");
         total = parseFloat(price);
         total = quantity * price;
@@ -54,7 +51,6 @@ Buy
             <tr>
                 <td class="title"><b>Quantity:</b></td>
                 <td>{{ form.quantity }}</td>
-                <!--<td><input id="quantity" type="number" name="quantity" value=0 onChange="calcTotal()"></td>-->
             </tr>
             <tr>
                 <td class="title"><b>Total:</b></td>

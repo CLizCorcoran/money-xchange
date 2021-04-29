@@ -4,7 +4,7 @@ from datetime import date
 from django.shortcuts import render
 from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
-from store.forms import TransactionForm, BuyForm, SearchForm, UserForm
+from store.forms import TransactionForm, BuyForm, SellForm, SearchForm, UserForm
 from store.models import Account, Transactions, Portfolio
 from django.views import generic 
 from django.views.generic import ListView
@@ -160,7 +160,7 @@ class TransactionsByUserListView(LoginRequiredMixin, ListView):
     """Generic class-based view listing transactions from the current user"""
     model = Transactions
     template_name = 'store/transactions_list_user.html'
-    paginate_by = 10
+    #paginate_by = 10
 
     # can also specify a filter(var=value)
     def get_queryset(self):
@@ -171,7 +171,7 @@ class PortfolioByUserListView(LoginRequiredMixin, ListView):
     """Generic class-based view listing user's portfolio"""
     model = Portfolio
     template_name = 'store/portfolio.html'
-    paginate_by = 10
+    #paginate_by = 10
 
     def get_queryset(self):
         #return Portfolio.objects.all().order_by('symbol')
@@ -253,6 +253,7 @@ def buy(request, symbol):
         
         context = {
             'crypto': info,
+            'account': account,
             'form': form
         }
         return render( request, 'store/buy.html', context )
@@ -263,7 +264,7 @@ def sell(request, symbol):
     account = Account.objects.get(user=request.user)
 
     if request.method == "POST":
-        form = BuyForm(request.POST, initial={'quantity': 0})
+        form = SellForm(request.POST, initial={'quantity': 0})
         
         if form.is_valid():
             quantity = form.cleaned_data.get('quantity')
@@ -280,7 +281,7 @@ def sell(request, symbol):
             # Delete the Transaction if no coins are remaining.  
             entry = Portfolio.objects.get(symbol=symbol)
             entry.quantity -= quantity
-            if quantity > 0:
+            if entry.quantity > 0:
                 entry.save()
             else:
                 entry.delete()   
@@ -292,7 +293,7 @@ def sell(request, symbol):
             return redirect('transaction_complete')
 
     else:
-        form = BuyForm()
+        form = SellForm()
         
         context = {
             'crypto': info,
