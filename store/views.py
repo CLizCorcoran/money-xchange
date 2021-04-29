@@ -20,6 +20,7 @@ from .models import Cryptocurrency
 
 import quandl 
 from .secrets import *
+from .graph import *
 
 
 #class HomeListView(ListView):
@@ -189,18 +190,21 @@ def crypto_info(request, symbol):
 
     high = max(month_info.High)
     low = min(month_info.Low)
+
+    #graph = return_graph()
+    graph = plot_graph(month_info.T, month_info.Last)
+
+    context = {
+        'crypto': info,
+        'high': high,
+        'low': low,
+        'month_data': month_info,
+        'graph': graph,
+        'date': datetime.now()
+    }
     
 
-    return render(
-        request,
-        'store/crypto_info.html',
-        {
-            'crypto': info,
-            'high': high,
-            'low': low,
-            'date': datetime.now()
-        }
-    )
+    return render(request,'store/crypto_info.html', context)
 
 
 def transaction_complete(request):
