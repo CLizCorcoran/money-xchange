@@ -23,17 +23,11 @@ from .secrets import *
 from .graph import *
 
 
-#class HomeListView(ListView):
-#    """Renders the home page, with a list of all messages."""
-#    model = Transactions 
-#
-#    def get_context_data(self, **kwargs):
-#        context = super(HomeListView, self).get_context_data(**kwargs)
-#        return context
-
+# Renders the home page.  The Cryptocurrency table is searched 
+# Last posted values of all symbols found are then discovered 
+# (through Quandl's API to BITFINEX).  
 def home(request):
-    #return render(request, "store/home.html")
-    # High, Low, Mid, Last, Bid, Ask, Volume
+    # Fields from Quandl:  High, Low, Mid, Last, Bid, Ask, Volume
     quandl.ApiConfig.api_key = QUANDL_KEY
 
     if request.method == "POST":
@@ -162,26 +156,47 @@ def crypto_info(request, symbol):
 
     quandl.ApiConfig.api_key = QUANDL_KEY
 
-    info = Cryptocurrency.objects.get(symbol=symbol)
+    inDB = True
+    name = ""
 
-    name = "BITFINEX/" + symbol + "USD"
+    try:
+        info = Cryptocurrency.objects.get(symbol=symbol)
+        name = info.name
+        current = info.price
+    except Cryptocurrency.DoesNotExist:
+        inDB = False
+
+
+    api = "BITFINEX/" + symbol + "USD"
     today = date.today()
     endDate = today.strftime("%Y-%m-%d")
     startDate = str(today.year) + '-' + str(today.month-1) + '-' + str(today.day)
 
-    month_info = quandl.get(name, start_date=startDate, end_date=endDate)
+    try:
+        month_info = quandl.get(api, start_date=startDate, end_date=endDate)
+    except Exception as e:
+        message = "The symbol, " + symbol + ", is not a known cryptocurency."
+        messages.error(request, message)
+        return redirect('home')
+    
 
     high = max(month_info.Last)
     low = min(month_info.Last)
 
+    if inDB == False:
+        current = month_info.Last[-1]
+    
+
     #graph = return_graph()
     graph = plot_graph(month_info.T, month_info.Last)
-
-    context = {
-        'crypto': info,
+    #'crypto': info,
+    context = {    
+        'symbol': symbol,
+        'name': name,
+        'inDB': inDB,
         'high': high,
         'low': low,
-        'month_data': month_info,
+        'current': current,
         'graph': graph,
         'date': datetime.now()
     }
