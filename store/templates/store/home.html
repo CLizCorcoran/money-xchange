@@ -3,12 +3,12 @@
 {% load custom_filters %}
 }
 {% block title %}
-Home
+Money XChange
 {% endblock %}
 {% block content %}
 
 <div class="container">
-    <h2>Market</h2>
+    <h2>Crypto Market</h2>
     <h4 class="date">{{ date | date:'F d' }}</h4>
     <form method="POST" class="form-inline my-2 my-lg-0">
         {% csrf_token %}
@@ -31,8 +31,8 @@ Home
                     <tr>
                         <td>{{ crypto.name }} ({{ crypto.symbol }})</td>
                         <td>{{ crypto.price|currency }}</td>
-                        {% if user.is_authenticated %}
                         <td><a href="{% url 'crypto_info' crypto.symbol %}" class="btn btn-secondary">Info</a></td>
+                        {% if user.is_authenticated %}
                         <td><a href="{% url 'buy' crypto.symbol %}" class="btn btn-primary">Buy</a></td>
                         {% endif %}                        
                     </tr>

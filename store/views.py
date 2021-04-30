@@ -49,9 +49,6 @@ def home(request):
         form = SearchForm()
  
         date = datetime.now()
-        #endDate = day.strftime("%Y-%m-%d")
-        #startDate = str(day.year) + '-' + str(day.month-1) + '-' + str(day.day)
-        #fromDate = "2021-04-01"
         for currency in Cryptocurrency.objects.all():
             name = "BITFINEX/" + currency.symbol + "USD"
             #info = quandl.get(name, start_date=startDate, end_date=endDate)
@@ -71,23 +68,7 @@ def home(request):
 
         return render(request, 'store/home.html', context)
 
-    #return render(
-    #    request,
-    #    'store/home.html',
-    #    {
-    #        'date': datetime.now(),
-    #        'bitcoin': bitcoin.Last.values[0],
-    #        'ethereum': ethereum.Last.values[0],
-    #        'ripple': ripple.Last.values[0],
-    #        'litecoin': litecoin.Last.values[0],
-     #       'zcash': zcash.Last.values[0],
-    #        #'bitcoincash': bitcoincash.Last.values[0]
-     #   }
-    #)
-    
-    #return HttpResponse(mydata.Last)
-
-
+ 
 class SignUpView(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
