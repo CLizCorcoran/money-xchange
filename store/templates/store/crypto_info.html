@@ -31,7 +31,7 @@
 <div id="graph-canvas" class="month_graph mt-3">
     {% if user.is_authenticated %}
         {% if inDB == True %}
-    <a href="{% url 'buy' symbol %}" class="btn btn-primary mb-3">Buy</a>
+    <a href="{% url 'buy' symbol %}" class="btn btn-primary mb-3">Buy</a><br/>
         {% else %}
         <p> This crypto is not in our database.  Please contact the Money XChange team for purchasing this crypto.</p>
         {% endif %}

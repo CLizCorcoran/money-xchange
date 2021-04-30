@@ -35,6 +35,7 @@ def home(request):
 
         if form.is_valid():
             search = form.cleaned_data.get('symbol')
+            search = search.upper()
             url = 'crypto/' + search
 
             return redirect(url)

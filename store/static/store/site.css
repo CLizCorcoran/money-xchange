@@ -1,41 +1,57 @@
-
-
-.message {
-    font-weight: 600;
-    color: blue;
-}
-
-.quantity {
-    width: 4em;
-}
-
-.fas-coins {
-    display: inline;
-}
-
-.title {
-    width: 8em;
-    font-weight: bold;
-}
-
-#error {
-    min-height: 2em;
-}
-
-.bigger {
-    font-size: 1.2em;
-}
+/*------------------------------------------------------------------*/
+/*  OVERALL SITE                                                       */
+/*------------------------------------------------------------------*/
 
 .site-container {
     max-width: 650px;
     min-width: 450px;
 }
 
+/* Class for fonts slightly bigger */
+.bigger {
+    font-size: 1.2em;
+}
+
+@media (min-width: 576px) {
+    /* class for the Logout link */
+    .logout {
+        align-self: center;
+    }
+}
+
+/*------------------------------------------------------------------*/
+/*  HOME PAGE                                                       */
+/*------------------------------------------------------------------*/
+
+/* Search field styles */
+#symbol_search {
+    width: 65px;
+}
+
+/* Style for Home Page Date text */
 .date {
     color: gray;
     padding-bottom: 25px;
 }
 
-#symbol_search {
-    width: 60px;
+
+/*------------------------------------------------------------------*/
+/*  BUY / SELL PAGES                                                       */
+/*------------------------------------------------------------------*/
+
+/* Quantity field */
+.quantity {
+    width: 4em;
 }
+
+/* Field titles */
+.title {
+    width: 8em;
+    font-weight: bold;
+}
+
+/* Error message style */
+#error {
+    min-height: 2em;
+}
+
