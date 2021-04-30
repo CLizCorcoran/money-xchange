@@ -43,34 +43,34 @@ def home(request):
         form = SearchForm()
  
         date = datetime.now()
-        for currency in Cryptocurrency.objects.all():
+        cryptos = Cryptocurrency.objects.all()
+
+        for currency in cryptos:
             name = "BITFINEX/" + currency.symbol + "USD"
-            #info = quandl.get(name, start_date=startDate, end_date=endDate)
             info = quandl.get(name, rows=1)
             currency.price = info.Last.values[0]
             currency.save()
-
         
-
-        cryptos = Cryptocurrency.objects.all()
         context = {
             'cryptos': cryptos,
             'date': date,
             'form': form
         }
 
-
         return render(request, 'store/home.html', context)
 
- 
+
+# User Registration 
 class SignUpView(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'registration/signup.html'
 
-#@transaction.atomic
-# https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 
+# Form to update the user's profile as well as to reset the account.
+# The following was helpful in merging two forms in one template.  
+#  Ended up not needing it, but still a good article.  
+#    https://simpleisbetterthancomplex.com/tutorial/2016/07/22/how-to-extend-django-user-model.html#onetoone
 @login_required
 def update_profile(request):
     if request.method == "POST":
@@ -91,6 +91,8 @@ def update_profile(request):
 
     return render(request, 'store/account.html', context)
 
+
+# Reset user account action
 @login_required
 def reset_account(request):
     # Reset amount to 10,000
@@ -107,16 +109,20 @@ def reset_account(request):
     messages.success(request, "Your account has been successfully reset!")
 
     return redirect('home')
-  
 
 
-
+# Rendering of the About page.
 def about(request):
     return render(request, "store/about.html")
 
+
+# Rendering of the Contact page (removed for now)
 def contact(request):
     return render(request, "store/contact.html")
 
+
+# Old view to manually log a transaction.  
+#  Keeping it here for posterities sake.  
 #@login_required
 #def log_transaction(request):
 #    form = TransactionForm(request.POST or None)
@@ -126,11 +132,13 @@ def contact(request):
 #            symbol = form.save(commit=False)
 #            symbol.log_date = datetime.now()
 #            symbol.save()
- #           return redirect("home")
+#           return redirect("home")
 #
 #    else:
 #        return render(request, "store/transaction.html", {"form":form})
 
+
+# Rendering of the Transactions page.
 class TransactionsByUserListView(LoginRequiredMixin, ListView):
     """Generic class-based view listing transactions from the current user"""
     model = Transactions
@@ -142,6 +150,7 @@ class TransactionsByUserListView(LoginRequiredMixin, ListView):
         return Transactions.objects.filter(user=self.request.user).order_by('log_date')
 
 
+# Rendering of the Portfolio page.  
 class PortfolioByUserListView(LoginRequiredMixin, ListView):
     """Generic class-based view listing user's portfolio"""
     model = Portfolio
@@ -152,6 +161,8 @@ class PortfolioByUserListView(LoginRequiredMixin, ListView):
         #return Portfolio.objects.all().order_by('symbol')
         return Portfolio.objects.filter(user=self.request.user).order_by('symbol')
 
+
+# Rendering of the Crypto page (crypto/<symbol>)
 def crypto_info(request, symbol):
 
     quandl.ApiConfig.api_key = QUANDL_KEY
@@ -205,10 +216,12 @@ def crypto_info(request, symbol):
     return render(request,'store/crypto_info.html', context)
 
 
+# Simple page letting the user know that their transaction was successfull.  
 def transaction_complete(request):
     return render(request, 'store/transaction_complete.html')
 
 
+# The Buy request page.  
 def buy(request, symbol):
 
     info = Cryptocurrency.objects.get(symbol=symbol)
@@ -230,7 +243,7 @@ def buy(request, symbol):
 
             # Add or Update the User's Portfolio entry.
             try:
-                entry = Portfolio.objects.get(symbol=symbol)
+                entry = Portfolio.objects.get(user=request.user, symbol=symbol)
                 entry.quantity += quantity
                 entry.save()
             
@@ -255,6 +268,7 @@ def buy(request, symbol):
         return render( request, 'store/buy.html', context )
 
 
+# The Sell request page.  
 def sell(request, symbol):
     info = Portfolio.objects.get(symbol=symbol)
     account = Account.objects.get(user=request.user)
