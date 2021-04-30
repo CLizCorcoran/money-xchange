@@ -6,6 +6,8 @@ money to buy and sell cryptocurrency.
 
 Django's default Authentication system is used for authentication.  
 
+
+
 ## About Money XChange
 
 ### Authentication
@@ -69,7 +71,11 @@ The goal of this project was to focus on learning Django.  Django for me was a d
 
 I did not focus as much on the UI as I typically would.  Simply wrapping my head around the new concepts and getting things to work took most of my time.  
 
-- Search:  I ran out of time to really implement Search properly.  Right now, it simply searches the prebuilt table of known cryptos.  I would like it to search Quandl instead.  
+- Partial purchases:  When I first started this project, I knew very little about
+cryptocurrencies.  I didn't realize that it was possible to buy in partial units.  This application only allows for single units.  Oh well... something for another day.
+
+- Search and Symbols:  Another area I didn't understand until late in the game was
+that Crypto symbols and Quandl symbols are not necessarily the same thing.  If the Crypto symbol is 3 characters, all is good; otherwise though, Quandl comes up with their own 3 character symbol.  Bummer...  I really need a Quandl symbol in the database.  Ran out of time.  For now, we will all pretend that all cryptocurrencies only have three symbols.  
 
 - Crypto info page:  There is more data I would have like to add here.  24hr change would have been awesome - complete with color coding for up or down valuations.  
 
