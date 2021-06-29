@@ -11,10 +11,12 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-from .secrets import *
+#from .secrets import *
 import os
 
-
+# SECURITY WARNING: keep the secret key used in production secret!
+# SECRET_KEY = 'django-insecure-!n=qwgc!4!ce3g48)c-h-1chf*50bsf=!4it1!f@4pp%l98(!s'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-!n=qwgc!4!ce3g48)c-h-1chf*50bsf=!4it1!f@4pp%l98(!s')
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '') != 'False'
 
 ALLOWED_HOSTS = []
 
@@ -45,6 +48,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -121,8 +125,15 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+# The URL to use when referring to static files (where they will be served from)
 STATIC_URL = '/static/'
+
+# The absolute path to the directory where collect static will collect static files
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_collected')
+
+# Simplified static file serving.
+# https://warehouse.python.org/project/whitenoise/
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -136,3 +147,11 @@ LOGIN_REDIRECT_URL = '/'
 
 # This logs any emails sent to the console 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Heroku:  Update database configuration from $DATABASE_URL
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env) 
+
+

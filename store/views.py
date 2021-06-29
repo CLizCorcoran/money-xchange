@@ -271,7 +271,7 @@ def buy(request, symbol):
 
 # The Sell request page.  
 def sell(request, symbol):
-    info = Portfolio.objects.get(symbol=symbol)
+    info = Portfolio.objects.get(symbol=symbol, user=request.user)
     account = Account.objects.get(user=request.user)
 
     if request.method == "POST":
@@ -290,7 +290,7 @@ def sell(request, symbol):
 
             # Modify the User's Portfolio to reflect purchase.
             # Delete the Transaction if no coins are remaining.  
-            entry = Portfolio.objects.get(symbol=symbol)
+            entry = Portfolio.objects.get(symbol=symbol, user=request.user)
             entry.quantity -= quantity
             if entry.quantity > 0:
                 entry.save()
