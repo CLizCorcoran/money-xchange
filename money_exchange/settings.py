@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 #from .secrets import *
 import os
+import django_heroku
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = 'django-insecure-!n=qwgc!4!ce3g48)c-h-1chf*50bsf=!4it1!f@4pp%l98(!s'
@@ -150,8 +151,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 # Heroku:  Update database configuration from $DATABASE_URL
-import dj_database_url
-db_from_env = dj_database_url.config(conn_max_age=500)
-DATABASES['default'].update(db_from_env) 
+#import dj_database_url
+#db_from_env = dj_database_url.config(conn_max_age=500)
+#DATABASES['default'].update(db_from_env) 
+
+# Activate Django-Heroku
+django_heroku.settings(locals())
 
 
